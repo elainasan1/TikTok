@@ -57,16 +57,6 @@ if aw then autow = "`^Enabled!" end
  
 
 
-function cek_uid(uid)
-    for _, user in pairs(whitelist) do
-        if uid == user then
-            return 1
-        end
-    end
-    return 0
-end
-if cek_uid(GetLocal().userid) == 1 then
-    AddCallback("fc","OnPacket", fc)
 
 local var = {}
 var[0] = "OnDialogRequest"
@@ -2075,6 +2065,7 @@ end
 
 
 
+
   
   
 
@@ -2127,8 +2118,17 @@ else
 open2()
 end
 
+function cek_uid(uid)
+    for _, user in pairs(whitelist) do
+        if uid == user then
+            return 1
+        end
+    end
+    return 0
+end
+if cek_uid(GetLocal().userid) == 1 then
 
-
+    AddCallback("fc","OnPacket", fc)
 AddCallback("Spin_checker", "OnVarlist", Spin_checker)
 AddCallback("setwarn","OnPacket", setwarn)
 AddCallback("allspin","OnPacket", all_spin)
@@ -2145,7 +2145,6 @@ l()
 else
     log("userID "..GetLocal().userid.." is not in whitelist")
 end
-
 
 
 
