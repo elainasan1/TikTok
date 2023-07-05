@@ -1,5 +1,5 @@
 -- do not touch
-version = "1.9"
+version = "2.0"
 tiles = {}
 tiles2 = {}
 collectdd = {}
@@ -15,7 +15,7 @@ ak = false
 ab = false
 aw = false
 pc = false
-whitelist = {34150,478560,257325,406562,497501,153162,121884,190857,37568,145505,220903,258148,383722,532151,264997,239746}
+whitelist = {34150,478560,257325,406562,497501,153162,121884,190857,37568,145505,220903,258148,383722,532151,264997,239746,81881}
 local lastfakespin = "NONE"
 telex,teley = -1,-1
 local shownamespin = true
