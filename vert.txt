@@ -162,6 +162,8 @@ add_smalltext|`2Version: ]] .. version .. [[|
 add_smalltext|Welcome, ]] .. GetLocal().name .. [[. This script is made by Introvert#7672, if you've purchased this from another source please be careful.|
 add_spacer|small|
 add_label_with_icon|small|`9Updates````|left|32|
+add_smalltext|`^- New Command - /dc.|
+add_smalltext|`^- New Command - /ds.|
 add_smalltext|`^- New Command - /fc.|
 add_smalltext|`^- New Command - /warn.|
 add_smalltext|`^- New Command - /co.|
@@ -227,6 +229,8 @@ add_smalltext|`c/dd <amount> <multiplier(optional)>`9- Drops Diamond locks.|
 add_smalltext|`c/db <amount> <multiplier(optional)>`9- Drops Blue Gem locks.|
 add_smalltext|`c/dbb <amount> <multiplier(optional)> `9- Drops Black Gem locks.|
 add_smalltext|`c/daw `9- Drops All locks.|
+add_smalltext|`c/dc `9- Drops clover.|
+add_smalltext|`c/ds `9- Drops Arroz.|
 add_smalltext|`c/split <percentage> `9- Drops all locks from inventory based on the percantage give. Example: you have 50 wls and you /split 10, it will drop 5 wls.|
 add_spacer|small|
  
@@ -876,6 +880,48 @@ Drop(d * 1000000)
 return true
 end
 SendPacket(2,"action|dialog_return\ndialog_name|drop\nitem_drop|11550|\nitem_count|" .. d .. "")
+return true
+end
+
+if 2 == type and packet:find("/ds ") then
+d = string.match(packet, "/ds (%d+)")
+d2 = string.match(packet, "/ds " .. d .. " (%d+%.?%d*)")
+if d2 ~= nil then
+d = tonumber(d)  * tonumber(d2)
+Drop(d * 100)
+return true
+end
+RunThread(function()
+if math.floor(GetItemCount(4604)) < math.floor(d) then
+local packet = {}
+packet.type = 10
+packet.int_data = 7188
+SendPacketRaw(packet)
+Sleep(100)
+end
+SendPacket(2,"action|dialog_return\ndialog_name|drop\nitem_drop|4604|\nitem_count|" .. d .. "")
+end)
+return true
+end
+
+if 2 == type and packet:find("/dc ") then
+d = string.match(packet, "/dc (%d+)")
+d2 = string.match(packet, "/dc " .. d .. " (%d+%.?%d*)")
+if d2 ~= nil then
+d = tonumber(d)  * tonumber(d2)
+Drop(d * 100)
+return true
+end
+RunThread(function()
+if math.floor(GetItemCount(528)) < math.floor(d) then
+local packet = {}
+packet.type = 10
+packet.int_data = 7188
+SendPacketRaw(packet)
+Sleep(100)
+end
+SendPacket(2,"action|dialog_return\ndialog_name|drop\nitem_drop|528|\nitem_count|" .. d .. "")
+end)
 return true
 end
 
