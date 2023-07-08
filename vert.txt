@@ -587,6 +587,11 @@ menu()
 return true
 end
 
+if 2 == type and packet:find("/proxy") then
+menu()
+return true
+end
+
 if 2 == type and packet:find("/co ") then
 d = string.match(packet, "/co (%w+)")
 if d == nil then
